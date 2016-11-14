@@ -2,8 +2,8 @@ import numpy as np
 import os
 from model.nn import NN as nn
 from model.layer import Layer as lay
-from model.activator import Activator as act
-from model.error import Error as err
+from model.activator import sigmoid, softmax
+from model.error import cross_entropy
 
 def read_data(fn):
     ml = np.loadtxt(fn, delimiter = ',')
@@ -25,9 +25,9 @@ if __name__ == '__main__':
     T = create_label(t, n_data, n_class)
 
     print 'train...'
-    sigmoid, softmax = act.sigmoid(), act.softmax()
+    sigmoid, softmax = sigmoid(), softmax()
     layers = lay.compose([n_input, 256, 128, n_class], [sigmoid, sigmoid, softmax])
-    nn = nn(layers, err.cross_entropy())
+    nn = nn(layers, cross_entropy())
     nn.train(X, T, epsilon = 0.001, lam = 0.0001, s_batch = 16, epochs = 50)
 
     print 'save figure of loss...'
